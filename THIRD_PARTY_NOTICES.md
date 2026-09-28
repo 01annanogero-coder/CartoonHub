@@ -19,7 +19,7 @@ the desktop app.
 | --- | --- | --- |
 | [Flutter](https://flutter.dev) and the Flutter plugins `webview_flutter`, `webview_flutter_android`, `url_launcher` | Android app | BSD 3-Clause |
 | `cupertino_icons` | Android app | MIT |
-| AndroidX `webkit`, `core` | Android app | Apache License 2.0 |
+| AndroidX `webkit` | Android app | Apache License 2.0 |
 | [Electron](https://www.electronjs.org) (includes Chromium; the installed app carries `LICENSE.electron.txt` and `LICENSES.chromium.html`) | Desktop app | MIT (Chromium: BSD-style and others) |
 | [electron-updater](https://www.electron.build/auto-update) | Desktop app | MIT |
 | [electron-builder](https://www.electron.build) | Desktop build tool | MIT |

@@ -1,9 +1,13 @@
 package com.annan.cartoonhub
 
 import android.app.Activity
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInstaller
 import android.net.ConnectivityManager
-import androidx.core.content.FileProvider
+import android.os.Build
 import org.json.JSONObject
 import java.io.File
 import java.io.InputStream
@@ -61,12 +65,28 @@ class Updater(private val activity: Activity) {
         part.renameTo(target)
     }
 
-    private fun install(apk: File) {
-        val uri = FileProvider.getUriForFile(activity, "${activity.packageName}.updates", apk)
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setDataAndType(uri, "application/vnd.android.package-archive")
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-        try { activity.startActivity(intent) } catch (_: Exception) {}
+    // A PackageInstaller session goes straight to the system "update this app?"
+    // prompt. (Opening the APK with ACTION_VIEW instead lets any app that claims
+    // APK files, like file managers or editors, into an "Open with" chooser.)
+    private fun install(apk: File) = thread(name = "updater-install") {
+        try {
+            val installer = activity.packageManager.packageInstaller
+            val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
+            params.setAppPackageName(activity.packageName)
+            val id = installer.createSession(params)
+            installer.openSession(id).use { session ->
+                session.openWrite("update.apk", 0, apk.length()).use { out ->
+                    apk.inputStream().use { it.copyTo(out) }
+                    session.fsync(out)
+                }
+                val mutable = if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0
+                val result = PendingIntent.getBroadcast(
+                    activity, id, Intent(activity, UpdateInstallReceiver::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT or mutable,
+                )
+                session.commit(result.intentSender)
+            }
+        } catch (_: Exception) { /* try again next launch */ }
     }
 
     private fun open(url: String): InputStream {
@@ -104,5 +124,15 @@ class Updater(private val activity: Activity) {
             }
             return false
         }
+    }
+}
+
+/** Android reports the install session here; it asks us to show the user its confirmation screen. */
+class UpdateInstallReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.getIntExtra(PackageInstaller.EXTRA_STATUS, -1) != PackageInstaller.STATUS_PENDING_USER_ACTION) return
+        val confirm = if (Build.VERSION.SDK_INT >= 33) intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java)
+        else @Suppress("DEPRECATION") intent.getParcelableExtra(Intent.EXTRA_INTENT)
+        confirm?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)?.let { context.startActivity(it) }
     }
 }

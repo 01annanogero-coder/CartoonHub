@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- The only files Updater.kt shares with Android's installer: downloaded update APKs. -->
-<paths>
-    <files-path name="updates" path="updates/" />
-</paths>

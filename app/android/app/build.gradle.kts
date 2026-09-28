@@ -50,7 +50,4 @@ flutter {
 
 dependencies {
     // Document-start script injection for the hidden (headless) WebView.
-    implementation("androidx.webkit:webkit:1.12.1")
-    // FileProvider, to hand a downloaded update to Android's installer (Updater.kt).
-    implementation("androidx.core:core:1.13.1")
-}
+    implementation("androidx.webkit:webkit:1.12.1")}
