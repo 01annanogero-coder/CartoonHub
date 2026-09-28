@@ -1,0 +1,15 @@
+{
+  "name": "cartoonhub",
+  "version": "1.0.0",
+  "description": "CartoonHub web dev server: the web UI in a normal browser, with Playwright as the headless browser",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Annan",
+  "license": "Unlicense",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "playwright": "^1.63.0"
+  }
+}

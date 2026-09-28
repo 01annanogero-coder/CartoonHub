@@ -1,0 +1,13 @@
+# Each project folder has its own .gitignore too (app/, app/android/, desktop/, server/).
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# Release files are uploaded to GitHub Releases, not committed.
+*.apk
+*.exe
+*.blockmap
+
+# Gradle writes reports here when building the Android app.
+app/android/build/

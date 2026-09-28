@@ -1,0 +1,80 @@
+{
+  "name": "cartoonhub-desktop",
+  "productName": "CartoonHub",
+  "version": "1.0.0",
+  "description": "CartoonHub desktop app (Windows, macOS, Linux)",
+  "author": "Annan",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "license": "Unlicense",
+  "repository": "github:01annanogero-coder/CartoonHub",
+  "build": {
+    "appId": "com.annan.cartoonhub",
+    "productName": "CartoonHub",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "*.js",
+      "build/icon.png"
+    ],
+    "extraResources": [
+      {
+        "from": "../app/assets/web",
+        "to": "web"
+      },
+      {
+        "from": "../app/assets/headless/hook.js",
+        "to": "hook.js"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "CartoonHub"
+    },
+    "artifactName": "CartoonHub-Setup-${version}.${ext}",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "01annanogero-coder",
+        "repo": "CartoonHub"
+      }
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.entertainment",
+      "artifactName": "CartoonHub-${version}-mac.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "AudioVideo",
+      "artifactName": "CartoonHub-${version}.${ext}"
+    }
+  }
+}
