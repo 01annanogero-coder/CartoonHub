@@ -128,13 +128,18 @@ npm start       # → http://localhost:5173  (add ?desktop for the desktop layou
 ## Publishing a new version
 
 1. Raise the version in `app/pubspec.yaml` (e.g. `1.1.0+2`) and `desktop/package.json` (`1.1.0`).
-2. Build the APK and the Windows installer (see above).
-3. Create a GitHub release tagged `v1.1.0` and attach:
-   - `CartoonHub-1.1.0.apk` (the renamed `app-release.apk`)
-   - `CartoonHub-Setup-1.1.0.exe`, `CartoonHub-Setup-1.1.0.exe.blockmap` and `latest.yml` from `desktop/dist/`
+2. Android: run `scripts/release.sh --publish` (Git Bash). It builds the APK, signs it,
+   checks the signatures, backs it up and attaches `CartoonHub-1.1.0.apk` to the GitHub
+   release `v1.1.0` (creating the release if needed).
+3. Windows: build the installer (see above) and add `CartoonHub-Setup-1.1.0.exe`,
+   `CartoonHub-Setup-1.1.0.exe.blockmap` and `latest.yml` from `desktop/dist/` to the same release.
 
-Android only installs an update that is signed with the same key as the installed app.
-Keep building releases with the same signing key.
+**Signing.** Android only installs an update signed with the same key as the installed app.
+Version 1.0.0 was signed with a debug key; later versions use a release key with
+[key rotation](https://source.android.com/docs/security/features/apksigning/v3#key-rotation):
+`release.sh` signs with both, so every existing install keeps updating. Never upload an APK
+that didn't go through `release.sh`. The keys and their passwords are not in this repository
+(`app/android/key.properties` is git-ignored); they are backed up offline.
 
 ## License
 

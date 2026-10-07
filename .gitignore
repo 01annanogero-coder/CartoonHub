@@ -11,3 +11,6 @@ Thumbs.db
 
 # Gradle writes reports here when building the Android app.
 app/android/build/
+
+# Signed release APKs from scripts/release.sh
+dist/
